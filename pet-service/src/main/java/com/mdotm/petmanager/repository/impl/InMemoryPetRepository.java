@@ -1,0 +1,43 @@
+package com.mdotm.petmanager.repository.impl;
+
+import com.mdotm.petmanager.model.Pet;
+import com.mdotm.petmanager.repository.PetRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Repository
+public class InMemoryPetRepository implements PetRepository {
+
+    private final Map<Long, Pet> inMemoryDataBase = new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong();
+
+    @Override
+    public Pet save(Pet pet) {
+        if (pet.getId() == null) {
+            pet.setId(idGenerator.getAndIncrement());
+        }
+        inMemoryDataBase.put(pet.getId(), pet);
+        return null;
+    }
+
+    @Override
+    public Optional<Pet> findById(Long id) {
+        return Optional.ofNullable(inMemoryDataBase.get(id));
+    }
+
+    @Override
+    public List<Pet> findAll() {
+        return new ArrayList<>(inMemoryDataBase.values());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        inMemoryDataBase.remove(id);
+    }
+}
