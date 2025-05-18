@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PetRepository {
     Pet save(Pet pet);
-    //Pet update(Pet pet);
+    Pet update(Pet pet);
     Optional<Pet> findById(Long id);
     List<Pet> findAll();
 
