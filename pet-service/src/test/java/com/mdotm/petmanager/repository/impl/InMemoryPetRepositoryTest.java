@@ -55,7 +55,7 @@ class InMemoryPetRepositoryTest {
 
     @Test
     void findById_shouldReturnEmptyWhenNotFound() {
-        Optional<Pet> pet = repository.findById(999L);
+        Optional<Pet> pet = repository.findById("999");
         assertThat(pet).isNotPresent();
     }
 

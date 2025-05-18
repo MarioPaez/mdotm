@@ -1,19 +1,17 @@
 package com.mdotm.petmanager.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
 @Data
-@Entity
+@Document(collection = "pets")
 public class Pet {
-    @GeneratedValue
-    @Id
-    private Long id;
+    @MongoId
+    private String id;
     private String name;
     private Species species;
     private Integer age;

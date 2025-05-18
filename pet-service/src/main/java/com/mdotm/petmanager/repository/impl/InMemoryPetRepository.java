@@ -16,20 +16,20 @@ import java.util.concurrent.atomic.AtomicLong;
 @Profile("inMemory")
 public class InMemoryPetRepository implements PetRepository {
 
-    private final Map<Long, Pet> inMemoryDataBase = new ConcurrentHashMap<>();
+    private final Map<String, Pet> inMemoryDataBase = new ConcurrentHashMap<>();
     private final AtomicLong idGenerator = new AtomicLong();
 
     @Override
     public Pet save(Pet pet) {
         if (pet.getId() == null) {
-            pet.setId(idGenerator.getAndIncrement());
+            pet.setId(String.valueOf(idGenerator.getAndIncrement()));
         }
         inMemoryDataBase.put(pet.getId(), pet);
         return pet;
     }
 
     @Override
-    public Optional<Pet> findById(Long id) {
+    public Optional<Pet> findById(String id) {
         return Optional.ofNullable(inMemoryDataBase.get(id));
     }
 
@@ -39,7 +39,7 @@ public class InMemoryPetRepository implements PetRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         inMemoryDataBase.remove(id);
     }
 }

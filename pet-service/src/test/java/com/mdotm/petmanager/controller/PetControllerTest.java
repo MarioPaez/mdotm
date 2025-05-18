@@ -40,7 +40,7 @@ class PetControllerTest {
 
     private static PetDto createPet1() {
         PetDto pet1 = new PetDto();
-        pet1.setId(1L);
+        pet1.setId("abc");
         pet1.setName("Fido");
         pet1.setSpecies(Species.DOG);
         return pet1;
@@ -48,7 +48,7 @@ class PetControllerTest {
 
     private static PetDto createPet2() {
         PetDto pet2 = new PetDto();
-        pet2.setId(2L);
+        pet2.setId("cba");
         pet2.setName("Mimi");
         pet2.setSpecies(Species.RABBIT);
         return pet2;
@@ -87,7 +87,7 @@ class PetControllerTest {
     @Test
     void getPetById_shouldReturnPet() throws Exception {
         PetDto pet = createPet1();
-        Mockito.when(petService.getPetById(1L)).thenReturn(pet);
+        Mockito.when(petService.getPetById("abc")).thenReturn(pet);
 
         mockMvc.perform(get("/pets/1"))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ class PetControllerTest {
         pet.setSpecies(Species.DOG);
         PetDto updatedPet = createPet1();
         updatedPet.setName("FidoUpdated");
-        Mockito.when(petService.updatePet(eq(1L), any(PetDto.class))).thenReturn(updatedPet);
+        Mockito.when(petService.updatePet(eq("abc"), any(PetDto.class))).thenReturn(updatedPet);
 
         mockMvc.perform(put("/pets/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +128,7 @@ class PetControllerTest {
 
     @Test
     void deletePet_shouldReturnNoContent() throws Exception {
-        Mockito.doNothing().when(petService).deletePet(1L);
+        Mockito.doNothing().when(petService).deletePet("abc");
 
         mockMvc.perform(delete("/pets/1"))
                 .andExpect(status().isNoContent());
@@ -136,7 +136,7 @@ class PetControllerTest {
 
     @Test
     void getPetById_shouldReturnNotFound_whenPetDoesNotExist() throws Exception {
-        Mockito.when(petService.getPetById(999L)).thenThrow(new PetNotFoundException("Pet not found"));
+        Mockito.when(petService.getPetById("999")).thenThrow(new PetNotFoundException("Pet not found"));
 
         mockMvc.perform(get("/pets/999"))
                 .andExpect(status().isNotFound());

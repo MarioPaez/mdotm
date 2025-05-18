@@ -1,18 +1,14 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: petdb-postgres
+  mongo:
+    image: mongo:6
+    container_name: petdb-mongo
     restart: always
-    environment:
-      POSTGRES_DB: petdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mongo-data:/data/db
 
 volumes:
-  pgdata:
+  mongo-data:

@@ -39,25 +39,25 @@ class PetServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         pet1 = new Pet();
-        pet1.setId(1L);
+        pet1.setId("abc");
         pet1.setName("Fido");
         pet1.setSpecies(Species.DOG);
         pet1.setAge(5);
 
         pet2 = new Pet();
-        pet2.setId(2L);
+        pet2.setId("cba");
         pet2.setName("Mimi");
         pet2.setSpecies(Species.CAT);
         pet2.setAge(3);
 
         petDto1 = new PetDto();
-        petDto1.setId(1L);
+        petDto1.setId("abc");
         petDto1.setName("Fido");
         pet1.setSpecies(Species.DOG);
         petDto1.setAge(5);
 
         petDto2 = new PetDto();
-        petDto2.setId(2L);
+        petDto2.setId("cba");
         petDto2.setName("Mimi");
         pet2.setSpecies(Species.CAT);
         petDto2.setAge(3);
@@ -118,19 +118,19 @@ class PetServiceImplTest {
 
     @Test
     void getPetById_existingId_returnsDto() {
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet1));
+        when(petRepository.findById("abc")).thenReturn(Optional.of(pet1));
         when(petMapper.toPetDto(pet1)).thenReturn(petDto1);
 
-        PetDto result = petService.getPetById(1L);
+        PetDto result = petService.getPetById("abc");
 
         assertThat(result).isEqualTo(petDto1);
     }
 
     @Test
     void getPetById_notFound_throwsException() {
-        when(petRepository.findById(1L)).thenReturn(Optional.empty());
+        when(petRepository.findById("abc")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> petService.getPetById(1L))
+        assertThatThrownBy(() -> petService.getPetById("abc"))
                 .isInstanceOf(PetNotFoundException.class)
                 .hasMessageContaining("Pet with ID 1 not found");
     }
@@ -140,7 +140,7 @@ class PetServiceImplTest {
         when(petMapper.toPet(petDto1)).thenReturn(pet1);
         when(petRepository.save(pet1)).thenAnswer(invocation -> {
             Pet p = invocation.getArgument(0);
-            p.setId(1L);
+            p.setId("abc");
             return p;
         });
         when(petMapper.toPetDto(pet1)).thenReturn(petDto1);
@@ -154,12 +154,12 @@ class PetServiceImplTest {
 
     @Test
     void updatePet_existingId_shouldUpdateAndReturnDto() {
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet1));
+        when(petRepository.findById("abc")).thenReturn(Optional.of(pet1));
         when(petMapper.toPet(petDto1)).thenReturn(pet1);
         when(petRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(petMapper.toPetDto(any())).thenReturn(petDto1);
 
-        PetDto result = petService.updatePet(1L, petDto1);
+        PetDto result = petService.updatePet("abc", petDto1);
 
         assertThat(result).isEqualTo(petDto1);
         verify(petRepository).save(any());
@@ -167,28 +167,28 @@ class PetServiceImplTest {
 
     @Test
     void updatePet_notFound_throwsException() {
-        when(petRepository.findById(1L)).thenReturn(Optional.empty());
+        when(petRepository.findById("abc")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> petService.updatePet(1L, petDto1))
+        assertThatThrownBy(() -> petService.updatePet("abc", petDto1))
                 .isInstanceOf(PetNotFoundException.class)
                 .hasMessageContaining("Pet with ID 1 not found");
     }
 
     @Test
     void deletePet_existingId_shouldDelete() {
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet1));
-        doNothing().when(petRepository).deleteById(1L);
+        when(petRepository.findById("abc")).thenReturn(Optional.of(pet1));
+        doNothing().when(petRepository).deleteById("abc");
 
-        petService.deletePet(1L);
+        petService.deletePet("abc");
 
-        verify(petRepository).deleteById(1L);
+        verify(petRepository).deleteById("abc");
     }
 
     @Test
     void deletePet_notFound_throwsException() {
-        when(petRepository.findById(1L)).thenReturn(Optional.empty());
+        when(petRepository.findById("abc")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> petService.deletePet(1L))
+        assertThatThrownBy(() -> petService.deletePet("abc"))
                 .isInstanceOf(PetNotFoundException.class)
                 .hasMessageContaining("Pet with ID 1 not found");
     }

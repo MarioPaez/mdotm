@@ -9,10 +9,10 @@ import java.util.List;
 public interface PetService {
 
     List<PetDto> getAllPets();
-    PetDto getPetById(Long id);
+    PetDto getPetById(String id);
     PetDto createPet(PetDto petDto);
-    PetDto updatePet(Long id, PetDto petDto);
-    void deletePet(Long id);
+    PetDto updatePet(String id, PetDto petDto);
+    void deletePet(String id);
     Page<PetDto> getAllPetsPaged(Pageable pageable);
 
 }

@@ -8,8 +8,8 @@ import java.util.Optional;
 public interface PetRepository {
 
     Pet save(Pet pet);
-    Optional<Pet> findById(Long id);
+    Optional<Pet> findById(String id);
     List<Pet> findAll();
 
-    void deleteById(Long id);
+    void deleteById(String id);
 }

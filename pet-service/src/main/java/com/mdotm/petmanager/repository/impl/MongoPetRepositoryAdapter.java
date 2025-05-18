@@ -1,7 +1,7 @@
 package com.mdotm.petmanager.repository.impl;
 
 import com.mdotm.petmanager.model.Pet;
-import com.mdotm.petmanager.repository.JpaPetRepository;
+import com.mdotm.petmanager.repository.MongoPetRepository;
 import com.mdotm.petmanager.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -11,29 +11,29 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Profile("mongo")
 @RequiredArgsConstructor
-@Profile("jpa")
-public class JpaPetRepositoryAdapter implements PetRepository {
+public  class MongoPetRepositoryAdapter implements PetRepository {
 
-    private final JpaPetRepository jpaPetRepository;
+    private final MongoPetRepository mongoPetRepository;
 
     @Override
     public Pet save(Pet pet) {
-        return jpaPetRepository.save(pet);
+        return mongoPetRepository.save(pet);
     }
 
     @Override
-    public Optional<Pet> findById(Long id) {
-        return jpaPetRepository.findById(id);
+    public Optional<Pet> findById(String id) {
+        return mongoPetRepository.findById(id);
     }
 
     @Override
     public List<Pet> findAll() {
-        return jpaPetRepository.findAll();
+        return mongoPetRepository.findAll();
     }
 
     @Override
-    public void deleteById(Long id) {
-        jpaPetRepository.deleteById(id);
+    public void deleteById(String id) {
+        mongoPetRepository.deleteById(id);
     }
 }

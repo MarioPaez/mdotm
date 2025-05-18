@@ -33,7 +33,7 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetDto> getPetById(@PathVariable Long id) {
+    public ResponseEntity<PetDto> getPetById(@PathVariable String id) {
         return ResponseEntity.ok(petService.getPetById(id));
     }
 
@@ -45,14 +45,14 @@ public class PetController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PetDto> updatePet(
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid @RequestBody PetDto petDto) {
         PetDto updated = petService.updatePet(id, petDto);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePet(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePet(@PathVariable String id) {
         petService.deletePet(id);
         return ResponseEntity.noContent().build();
     }

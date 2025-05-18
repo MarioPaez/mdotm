@@ -76,7 +76,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDto getPetById(Long id) {
+    public PetDto getPetById(String id) {
         log.info("Fetching pet with ID: {}", id);
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> {
@@ -101,7 +101,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDto updatePet(Long id, PetDto petDto) {
+    public PetDto updatePet(String id, PetDto petDto) {
 
         log.info("Updating pet with ID: {} -> {}", id, petDto);
 
@@ -124,7 +124,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void deletePet(Long id) {
+    public void deletePet(String id) {
         log.info("Deleting pet with ID: {}", id);
         if (petRepository.findById(id).isPresent()) {
             petRepository.deleteById(id);
