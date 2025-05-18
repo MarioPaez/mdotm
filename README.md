@@ -18,6 +18,7 @@ This project is a **RESTful API** built with **Spring Boot** for managing pets. 
 - Lombok  
 - Swagger / OpenAPI 2.5.0  
 - JUnit 5 + Mockito (for testing)
+- Docker
 
 ## 📚 Features
 
