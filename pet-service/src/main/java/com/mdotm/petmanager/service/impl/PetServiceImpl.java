@@ -39,6 +39,43 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    public Page<PetDto> getAllPetsPaged(Pageable pageable) {
+        log.info("Fetching all pets paged with sorting: {}", pageable.getSort());
+
+        List<Pet> pets = new ArrayList<>(petRepository.findAll());
+        // Validate allowed sorting fields
+        for (Sort.Order order : pageable.getSort()) {
+            if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
+                log.warn("Attempt to sort by forbidden field: {}", order.getProperty());
+                throw new SortNotAllowedException("Sorting by field '" + order.getProperty() + "' is not allowed.");
+            }
+        }
+        pageable.getSort().stream()
+                .map(order -> {
+
+                    Comparator<Pet> c = switch (order.getProperty()) {
+                        case NAME ->
+                                Comparator.comparing(Pet::getName, Comparator.nullsLast(String::compareToIgnoreCase));
+                        case SPECIES ->
+                                Comparator.comparing(Pet::getSpecies, Comparator.nullsLast(Comparator.naturalOrder()));
+                        case AGE -> Comparator.comparing(Pet::getAge, Comparator.nullsLast(Integer::compareTo));
+                        default -> null; // propiedad no soportada
+                    };
+                    if (c == null) return null;
+                    return order.isAscending() ? c : c.reversed();
+                })
+                .filter(Objects::nonNull)
+                .reduce(Comparator::thenComparing).ifPresent(pets::sort);
+
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), pets.size());
+        List<Pet> pageContent = pets.subList(start, end);
+
+        return new PageImpl<>(petMapper.toPetsDto(pageContent), pageable, pets.size());
+    }
+
+    @Override
     public PetDto getPetById(Long id) {
         log.info("Fetching pet with ID: {}", id);
         Pet pet = petRepository.findById(id)
@@ -96,42 +133,5 @@ public class PetServiceImpl implements PetService {
             log.warn("Pet with ID {} not found for deletion", id);
             throw new PetNotFoundException("Pet with ID " + id + " not found");
         }
-    }
-
-    @Override
-    public Page<PetDto> getAllPetsPaged(Pageable pageable) {
-        log.info("Fetching all pets paged with sorting: {}", pageable.getSort());
-
-        List<Pet> pets = new ArrayList<>(petRepository.findAll());
-        // Validate allowed sorting fields
-        for (Sort.Order order : pageable.getSort()) {
-            if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
-                log.warn("Attempt to sort by forbidden field: {}", order.getProperty());
-                throw new SortNotAllowedException("Sorting by field '" + order.getProperty() + "' is not allowed.");
-            }
-        }
-        pageable.getSort().stream()
-                .map(order -> {
-
-                    Comparator<Pet> c = switch (order.getProperty()) {
-                        case NAME ->
-                                Comparator.comparing(Pet::getName, Comparator.nullsLast(String::compareToIgnoreCase));
-                        case SPECIES ->
-                                Comparator.comparing(Pet::getSpecies, Comparator.nullsLast(Comparator.naturalOrder()));
-                        case AGE -> Comparator.comparing(Pet::getAge, Comparator.nullsLast(Integer::compareTo));
-                        default -> null; // propiedad no soportada
-                    };
-                    if (c == null) return null;
-                    return order.isAscending() ? c : c.reversed();
-                })
-                .filter(Objects::nonNull)
-                .reduce(Comparator::thenComparing).ifPresent(pets::sort);
-
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), pets.size());
-        List<Pet> pageContent = pets.subList(start, end);
-
-        return new PageImpl<>(petMapper.toPetsDto(pageContent), pageable, pets.size());
     }
 }

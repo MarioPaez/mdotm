@@ -2,6 +2,7 @@ package com.mdotm.petmanager.repository.impl;
 
 import com.mdotm.petmanager.model.Pet;
 import com.mdotm.petmanager.repository.PetRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
+@Profile("inMemory")
 public class InMemoryPetRepository implements PetRepository {
 
     private final Map<Long, Pet> inMemoryDataBase = new ConcurrentHashMap<>();
