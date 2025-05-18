@@ -59,7 +59,7 @@ public class PetServiceImpl implements PetService {
                         case SPECIES ->
                                 Comparator.comparing(Pet::getSpecies, Comparator.nullsLast(Comparator.naturalOrder()));
                         case AGE -> Comparator.comparing(Pet::getAge, Comparator.nullsLast(Integer::compareTo));
-                        default -> null; // propiedad no soportada
+                        default -> null;
                     };
                     if (c == null) return null;
                     return order.isAscending() ? c : c.reversed();

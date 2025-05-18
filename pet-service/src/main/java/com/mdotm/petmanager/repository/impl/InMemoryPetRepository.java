@@ -25,7 +25,7 @@ public class InMemoryPetRepository implements PetRepository {
             pet.setId(idGenerator.getAndIncrement());
         }
         inMemoryDataBase.put(pet.getId(), pet);
-        return null;
+        return pet;
     }
 
     @Override
