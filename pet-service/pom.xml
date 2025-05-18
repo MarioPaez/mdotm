@@ -57,6 +57,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>
