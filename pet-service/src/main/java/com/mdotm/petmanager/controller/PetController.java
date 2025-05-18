@@ -2,6 +2,7 @@ package com.mdotm.petmanager.controller;
 
 import com.mdotm.petmanager.dto.PetDto;
 import com.mdotm.petmanager.service.PetService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/pets")
 @RequiredArgsConstructor
+@Tag(name = "Pet Management", description = "Operations pertaining to pets in the Pet Manager API")
 public class PetController {
 
     private final PetService petService;
