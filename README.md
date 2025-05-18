@@ -4,14 +4,14 @@ This project also supports a **MongoDB** backend. In the `/docker` folder, you w
 
 ## 🛠️ How to Run with MongoDB
 
-1. Make sure you are on the correct branch that uses MongoDB (e.g. `mongo`).
+1. Make sure you are on the correct branch that uses MongoDB (after3h-mongoImplementation).
 2. Start the Docker container by running the following command from the `/docker` directory:
 
 ```bash
    docker compose up
  ```
 
-3. Set the Spring profile to mongo.
+3. Set the Spring profile to mongo in application.yml file.
 4. Run the application using:
 ```bash
 mvn spring-boot:run
