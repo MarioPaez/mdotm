@@ -2,6 +2,7 @@ package com.mdotm.petmanager.service.impl;
 
 import com.mdotm.petmanager.dto.PetDto;
 import com.mdotm.petmanager.exception.PetNotFoundException;
+import com.mdotm.petmanager.exception.SortNotAllowedException;
 import com.mdotm.petmanager.mapper.PetMapper;
 import com.mdotm.petmanager.model.Pet;
 import com.mdotm.petmanager.repository.PetRepository;
@@ -9,11 +10,12 @@ import com.mdotm.petmanager.service.PetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,11 @@ public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
     private final PetMapper petMapper;
+
+    private final String NAME = "name";
+    private final String SPECIES = "species";
+    private final String AGE = "age";
+    private final Set<String> ALLOWED_SORT_FIELDS = Set.of(NAME, SPECIES, AGE);
 
     @Override
     public List<PetDto> getAllPets() {
@@ -93,6 +100,38 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Page<PetDto> getAllPetsPaged(Pageable pageable) {
-        return null;
+        log.info("Fetching all pets paged with sorting: {}", pageable.getSort());
+
+        List<Pet> pets = new ArrayList<>(petRepository.findAll());
+        // Validate allowed sorting fields
+        for (Sort.Order order : pageable.getSort()) {
+            if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
+                log.warn("Attempt to sort by forbidden field: {}", order.getProperty());
+                throw new SortNotAllowedException("Sorting by field '" + order.getProperty() + "' is not allowed.");
+            }
+        }
+        pageable.getSort().stream()
+                .map(order -> {
+
+                    Comparator<Pet> c = switch (order.getProperty()) {
+                        case NAME ->
+                                Comparator.comparing(Pet::getName, Comparator.nullsLast(String::compareToIgnoreCase));
+                        case SPECIES ->
+                                Comparator.comparing(Pet::getSpecies, Comparator.nullsLast(Comparator.naturalOrder()));
+                        case AGE -> Comparator.comparing(Pet::getAge, Comparator.nullsLast(Integer::compareTo));
+                        default -> null; // propiedad no soportada
+                    };
+                    if (c == null) return null;
+                    return order.isAscending() ? c : c.reversed();
+                })
+                .filter(Objects::nonNull)
+                .reduce(Comparator::thenComparing).ifPresent(pets::sort);
+
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), pets.size());
+        List<Pet> pageContent = pets.subList(start, end);
+
+        return new PageImpl<>(petMapper.toPetsDto(pageContent), pageable, pets.size());
     }
 }

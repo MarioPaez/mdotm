@@ -20,4 +20,15 @@ public class PetDto {
     private Integer age;
     @Nullable
     private String ownerName;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", species='" + species + '\'' +
+                ", age=" + age +
+                ", ownerName='" + ownerName + '\'' +
+                '}';
+    }
 }
