@@ -49,6 +49,17 @@ To run the tests:
 ```bash
 mvn test
 ```
+## ▶️ Running the Application
+
+You can run the application using one of the following methods:
+
+- **Using Maven**:
+
+```bash
+mvn spring-boot:run
+```
+- **Using IntelliJ IDEA**:
+Open the project in IntelliJ, locate the main class (PetServiceApplication), and run it directly from the IDE.
 
 ## 📦 Populate the Database with Sample Data
 
